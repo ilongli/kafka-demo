@@ -30,7 +30,7 @@ public class CustomProducerParameters {
         properties.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
         // linger.ms
         properties.put(ProducerConfig.LINGER_MS_CONFIG, 1);
-        // 压缩
+        // 压缩gzip、snappy、lz4和zstd）
         properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
 
         // 1.创建生产者
