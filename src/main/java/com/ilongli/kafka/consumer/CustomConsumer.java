@@ -24,7 +24,7 @@ public class CustomConsumer {
         Properties properties = new Properties();
 
         // 连接集群
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.1.81:9091");
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "sc1:9091,sc2:9092,sc3:9093");
         // 指定对应的key和value的序列化类型
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
