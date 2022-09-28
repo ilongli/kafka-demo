@@ -20,7 +20,8 @@ public class CustomProducerAcks {
         Properties properties = new Properties();
 
         // 连接集群
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.1.81:9092,192.168.1.82:9092,192.168.1.83:9092");
+//        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.1.81:9092,192.168.1.82:9092,192.168.1.83:9092");
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "sc1:9091");
         // 指定对应的key和value的序列化类型
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
