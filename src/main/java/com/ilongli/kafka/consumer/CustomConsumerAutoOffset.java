@@ -1,11 +1,8 @@
 package com.ilongli.kafka.consumer;
 
 import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.sql.Array;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -13,7 +10,7 @@ import java.util.Properties;
 /**
  * Created by ilongli on 2022/9/28.
  */
-public class CustomConsumer {
+public class CustomConsumerAutoOffset {
 
     public static void main(String[] args) {
 
@@ -27,19 +24,21 @@ public class CustomConsumer {
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 
-        // 设置分区分配策略
-        // https://kafka.apache.org/documentation/#consumerconfigs_partition.assignment.strategy
-        properties.put(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, "org.apache.kafka.clients.consumer.RoundRobinAssignor");
-
         // 配置消费者组id
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "test");
+
+        // 自动提交
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
+
+        // 提交时间间隔
+        properties.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 1000);
 
         // 1.创建一个消费者 "", "hello"
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(properties);
 
         // 2.订阅主题(first)
         ArrayList<String> topics = new ArrayList<>();
-        topics.add("second");
+        topics.add("first");
         kafkaConsumer.subscribe(topics);
 
         // 3.消费数据

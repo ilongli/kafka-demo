@@ -1,19 +1,17 @@
 package com.ilongli.kafka.consumer;
 
 import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.sql.Array;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Properties;
+import java.util.*;
 
 /**
+ * 指定时间开始消费（消费指定时间之后的数据）
  * Created by ilongli on 2022/9/28.
  */
-public class CustomConsumer {
+public class CustomConsumerSeekTime {
 
     public static void main(String[] args) {
 
@@ -27,10 +25,6 @@ public class CustomConsumer {
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 
-        // 设置分区分配策略
-        // https://kafka.apache.org/documentation/#consumerconfigs_partition.assignment.strategy
-        properties.put(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, "org.apache.kafka.clients.consumer.RoundRobinAssignor");
-
         // 配置消费者组id
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "test");
 
@@ -39,8 +33,37 @@ public class CustomConsumer {
 
         // 2.订阅主题(first)
         ArrayList<String> topics = new ArrayList<>();
-        topics.add("second");
+        topics.add("first");
         kafkaConsumer.subscribe(topics);
+
+        // 指定位置进行消费
+        Set<TopicPartition> assignments = kafkaConsumer.assignment();
+
+        // 保证分区分配方案已经制定完毕
+        while (assignments.size() == 0) {
+            kafkaConsumer.poll(Duration.ofSeconds(1));
+            assignments = kafkaConsumer.assignment();
+        }
+
+        // 希望把时间转换为对应的offset
+        HashMap<TopicPartition, Long> topicPartitionLongHashMap = new HashMap<>();
+
+        // 一天前的数据
+        long time = System.currentTimeMillis() - 1 * 24 * 3600 * 1000;
+
+        // 封装对应集合
+        for (TopicPartition assignment : assignments) {
+            topicPartitionLongHashMap.put(assignment, time);
+        }
+
+        Map<TopicPartition, OffsetAndTimestamp> topicPartitionOffsetAndTimestampMap = kafkaConsumer.offsetsForTimes(topicPartitionLongHashMap);
+
+        for (TopicPartition assignment : assignments) {
+            // 指定消费的offset
+            long offset = topicPartitionOffsetAndTimestampMap.get(assignment).offset();
+            System.out.println(offset);
+            kafkaConsumer.seek(assignment, offset);
+        }
 
         // 3.消费数据
         while (true) {

@@ -1,11 +1,11 @@
 package com.ilongli.kafka.consumer;
 
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.sql.Array;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -13,7 +13,7 @@ import java.util.Properties;
 /**
  * Created by ilongli on 2022/9/28.
  */
-public class CustomConsumer {
+public class CustomConsumer1 {
 
     public static void main(String[] args) {
 
@@ -34,12 +34,13 @@ public class CustomConsumer {
         // 配置消费者组id
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "test");
 
+
         // 1.创建一个消费者 "", "hello"
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(properties);
 
         // 2.订阅主题(first)
         ArrayList<String> topics = new ArrayList<>();
-        topics.add("second");
+        topics.add("first");
         kafkaConsumer.subscribe(topics);
 
         // 3.消费数据
@@ -51,6 +52,7 @@ public class CustomConsumer {
             }
 
         }
+
 
     }
 
